@@ -9,10 +9,5 @@
 * run [analyse.py ](djinni_technologies_statistics/data_analysing/analyse.py)
 
 ## Data Analytics Examples
-![Screenshot 2023-07-17 at 17.14.13.png](..%2F..%2FDesktop%2FScreenshot%202023-07-17%20at%2017.14.13.png)
+<img width="784" alt="Screenshot 2023-07-17 at 17 14 13" src="https://github.com/avkpol/Djinni-Python-technologies-statistics/assets/10571459/d2203d69-db5a-4cc1-a177-260f4c85c99a">
 
-![Screenshot 2023-07-17 at 17.14.30.png](..%2F..%2FDesktop%2FScreenshot%202023-07-17%20at%2017.14.30.png)
-
-![Screenshot 2023-07-17 at 17.14.44.png](..%2F..%2FDesktop%2FScreenshot%202023-07-17%20at%2017.14.44.png)
-
-![Screenshot 2023-07-17 at 17.14.56.png](..%2F..%2FDesktop%2FScreenshot%202023-07-17%20at%2017.14.56.png)
