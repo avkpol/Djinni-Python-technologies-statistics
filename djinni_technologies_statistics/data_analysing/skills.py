@@ -46,10 +46,9 @@ def extract_skills_from_descriptions():
 
             for skill in skills:
                 if skill.lower() in description:
-                    if skill in skills_count:
-                        skills_count[skill] += 1
-                    else:
-                        skills_count[skill] = 1
+                    skills_count[skill] = skills_count.get(skill, 0) + 1
+
+
 
     with open(
             "../data/skills.csv", "w", newline="", encoding="utf-8"

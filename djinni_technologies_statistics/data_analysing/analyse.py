@@ -14,8 +14,6 @@ def preprocess_salary(salary):
             salary = max(int(value[-4:]) for value in salary.split("-"))
         elif salary.startswith("до") or salary.startswith("від"):
             salary = int(salary[-4:])
-        else:
-            salary = int(salary[-4:])
     else:
         salary = 0
     return salary
