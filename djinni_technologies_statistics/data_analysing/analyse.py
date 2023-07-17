@@ -2,11 +2,14 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
+ALL_DATA = '../data/python_vacancies.csv'
+TECHNOLOGIES = '../data/skills.csv'
 
 def analyze_skills():
     skills_data = {}
-    with open('../data/skills.csv', 'r', encoding='utf-8') as csvfile:
+    with open(TECHNOLOGIES, 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
         for row in reader:
@@ -29,7 +32,7 @@ def analyze_skills():
 
 def analyze_applicants():
     applicants_data = {}
-    with open('../data/python_vacancies.csv', 'r', encoding='utf-8') as csvfile:
+    with open(ALL_DATA, 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
         for row in reader:
@@ -64,34 +67,61 @@ def preprocess_salary(salary):
             return max(salary_values)
         elif salary.startswith('до'):
             return int(
-                salary.strip().replace('до $', '').replace(',', '').strip()[-4:]
+                salary.strip().replace('до $', '').
+                replace(',', '').strip()[-4:]
             )
         elif salary.startswith('від'):
             return int(
-                salary.strip().replace('від $', '').replace(',', '').strip()[-4:]
+                salary.strip().replace('від $', '').
+                replace(',', '').strip()[-4:]
             )
         else:
-            return int(salary.strip().replace('$', '').replace(',', '').strip()[-4:])
+            return int(salary.strip().
+                       replace('$', '').replace(',', '').strip()[-4:])
     return 0
 
-def perform_correlation_analysis(vacancies_file, skills_file):
+def perform_correlation_analysis(
+    vacancies_file, skills_file, top_n=50
+):
     df_vacancies = pd.read_csv(vacancies_file)
     df_skills = pd.read_csv(skills_file)
     df_vacancies['salary'] = df_vacancies['salary'].apply(preprocess_salary)
     columns = ['experience', 'salary', 'views', 'applications']
-    for skill in df_skills['Skill']:
-        skill_vacancies = (
-            df_vacancies[df_vacancies['description'].
-            str.contains(skill, case=False, na=False)]
-        )
-        correlation_matrix = skill_vacancies[columns].corr()
-        print(f"Correlation Matrix for Skill: {skill}")
-        print(correlation_matrix)
-        print("\n")
+    skill_correlations = {}
 
+    for skill in df_skills['Skill']:
+        skill_vacancies = df_vacancies[
+            df_vacancies['description'].
+            str.contains(skill, case=False, na=False)
+        ]
+        correlation_matrix = skill_vacancies[columns].corr()
+        skill_correlations[skill] = correlation_matrix
+
+    sorted_skills = sorted(
+        skill_correlations.keys(),
+        key=lambda x: np.mean(np.abs(skill_correlations[x])), reverse=True
+    )
+    top_skills = sorted_skills[:top_n]
+
+    combined_matrix = np.zeros((len(top_skills), len(columns)))
+
+    for i, skill in enumerate(top_skills):
+        combined_matrix[i] = skill_correlations[skill].mean().values
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(
+        combined_matrix, annot=True, xticklabels=columns,
+        yticklabels=top_skills, cmap='coolwarm'
+    )
+    plt.title(f"Correlation Matrix for Top {top_n} Skills")
+    plt.xlabel("Parameters")
+    plt.ylabel("Skills")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
 
 
 if __name__ == "__main__":
     analyze_skills()
     analyze_applicants()
-    perform_correlation_analysis('../data/python_vacancies.csv', '../data/skills.csv')
+    perform_correlation_analysis(ALL_DATA, TECHNOLOGIES)
