@@ -16,7 +16,6 @@ class DjinniSpider:
     name = "djinni"
     start_url = URL_TO_PARSE
     chrome_options = Options()
-    # chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
     results = []
 
