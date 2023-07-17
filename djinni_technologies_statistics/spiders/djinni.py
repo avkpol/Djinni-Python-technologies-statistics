@@ -50,7 +50,7 @@ class DjinniSpider:
         return element
 
     def write_to_file(self):
-        with open('python_vacancies.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        with open('../data/python_vacancies.csv', 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['title', 'description']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
