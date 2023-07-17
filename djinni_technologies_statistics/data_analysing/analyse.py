@@ -40,7 +40,9 @@ def analyze_applicants():
             applicants = int(row[3])
             applicants_data[title] = applicants
 
-    sorted_applicants = sorted(applicants_data.items(), key=lambda x: x[1], reverse=True)
+    sorted_applicants = sorted(
+        applicants_data.items(), key=lambda x: x[1], reverse=True
+    )
     top_titles = [x[0] for x in sorted_applicants[:50]]
     top_counts = [x[1] for x in sorted_applicants[:50]]
 
