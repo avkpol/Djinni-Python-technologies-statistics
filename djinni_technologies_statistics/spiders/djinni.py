@@ -31,9 +31,18 @@ class DjinniSpider:
             if title:
                 description = job_item.css('.list-jobs__description .text-card::text').extract()
                 description = ' '.join(description).strip() if description else ''
+
+                views = job_item.xpath('.//span[contains(@class, "bi-eye-fill")]/following-sibling::text()').get()
+                views = int(views.strip()) if views else 0
+
+                applications = job_item.xpath('.//span[contains(@class, "bi-people-fill")]/following-sibling::text()').get()
+                applications = int(applications.strip()) if applications else 0
+
                 self.results.append({
                     'title': title,
-                    'description': description
+                    'description': description,
+                    'views': views,
+                    'applications': applications
                 })
 
         next_page = selector.css(".pagination > li")[-1].css("a::attr(href)").get()
@@ -51,7 +60,7 @@ class DjinniSpider:
 
     def write_to_file(self):
         with open('../data/python_vacancies.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['title', 'description']
+            fieldnames = ['title', 'description', 'views', 'applications']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(self.results)
@@ -68,4 +77,3 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(crawl())
     loop.close()
-

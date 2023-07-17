@@ -11,7 +11,7 @@ def extract_skills_from_descriptions():
 
     with open('../data/python_vacancies.csv', 'r', newline='', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
-        next(reader)  # Skip the header row
+        next(reader)
 
         for row in reader:
             description = row[1].lower()
