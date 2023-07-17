@@ -1,8 +1,10 @@
 attrs==23.1.0
 Automat==22.10.0
+black==23.7.0
 certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.2.0
+click==8.1.5
 constantly==15.1.0
 contourpy==1.1.0
 cryptography==41.0.2
@@ -21,12 +23,15 @@ jmespath==1.0.1
 kiwisolver==1.4.4
 lxml==4.9.3
 matplotlib==3.7.2
+mypy-extensions==1.0.0
 numpy==1.25.1
 outcome==1.2.0
 packaging==23.1
 pandas==2.0.3
 parsel==1.8.1
+pathspec==0.11.1
 Pillow==10.0.0
+platformdirs==3.9.1
 Protego==0.2.1
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
@@ -42,6 +47,7 @@ queuelib==1.6.2
 requests==2.31.0
 requests-file==1.5.1
 Scrapy==2.9.0
+seaborn==0.12.2
 selenium==4.10.0
 service-identity==23.1.0
 six==1.16.0
