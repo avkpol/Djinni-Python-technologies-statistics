@@ -82,6 +82,20 @@ def preprocess_salary(salary):
                        replace('$', '').replace(',', '').strip()[-4:])
     return 0
 
+
+def analyze_job_offers_by_experience(vacancies_file):
+    df_vacancies = pd.read_csv(vacancies_file)
+    offers_by_experience = df_vacancies['experience'].value_counts().sort_index()
+    years_of_experience = offers_by_experience.index.to_numpy()
+    job_offers_count = offers_by_experience.to_numpy()
+
+    plt.bar(years_of_experience, job_offers_count)
+    plt.xlabel('Years of Experience')
+    plt.ylabel('Number of Job Offers')
+    plt.title('Job Offers by Years of Experience')
+    plt.show()
+
+
 def perform_correlation_analysis(
     vacancies_file, skills_file, top_n=50
 ):
@@ -123,7 +137,10 @@ def perform_correlation_analysis(
     plt.show()
 
 
+
+
 if __name__ == "__main__":
     analyze_skills()
     analyze_applicants()
     perform_correlation_analysis(ALL_DATA, TECHNOLOGIES)
+    analyze_job_offers_by_experience(ALL_DATA)
