@@ -1,27 +1,25 @@
-import scrapy
+import asyncio
 import csv
-from scrapy.crawler import CrawlerProcess
-from scrapy.selector import Selector
+from scrapy import Selector
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from urllib.parse import urljoin
 
 
-class DjinniSpider(scrapy.Spider):
+class DjinniSpider:
     name = 'djinni'
-    start_urls = ['https://djinni.co/jobs/?primary_keyword=Python']
+    start_url = 'https://djinni.co/jobs/?primary_keyword=Python'
+    chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    driver = webdriver.Chrome(options=chrome_options)
+    results = []
 
-    def __init__(self):
-        chrome_options = Options()
-        # chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(options=chrome_options)
-        self.results = []
-
-    def parse(self, response):
-        self.driver.get(response.url)
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "list-jobs__item")))
+    async def parse(self, response):
+        self.driver.get(response)
+        await self.wait_for_element(By.CLASS_NAME, "list-jobs__item")
         html = self.driver.page_source
         selector = Selector(text=html)
 
@@ -31,25 +29,25 @@ class DjinniSpider(scrapy.Spider):
             title = job_item.css('.list-jobs__title > a > span::text').get()
             title = title.strip() if title else ''
             if title:
-                print(title)  # Print the title
-
                 description = job_item.css('.list-jobs__description .text-card::text').extract()
                 description = ' '.join(description).strip() if description else ''
-                print(description)  # Print the description
-
                 self.results.append({
                     'title': title,
                     'description': description
                 })
 
-        next_page = response.css(".pagination > li")[-1].css("a::attr(href)").get()
+        next_page = selector.css(".pagination > li")[-1].css("a::attr(href)").get()
         if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
+            next_url = urljoin(response, next_page)
+            if next_url == response:
+                return
+            await self.parse(response=next_url)
 
-        self.write_to_file()
-
-    def closed(self, reason):
-        self.driver.quit()
+    async def wait_for_element(self, by, value):
+        element = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((by, value)))
+        )
+        return element
 
     def write_to_file(self):
         with open('python_vacancies.csv', 'w', newline='', encoding='utf-8') as csvfile:
@@ -59,8 +57,15 @@ class DjinniSpider(scrapy.Spider):
             writer.writerows(self.results)
 
 
+async def crawl():
+    spider = DjinniSpider()
+    await spider.parse(response=spider.start_url)
+    spider.write_to_file()
+    spider.driver.quit()
+
+
 if __name__ == "__main__":
-    process = CrawlerProcess()
-    process.crawl(DjinniSpider)
-    process.start()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(crawl())
+    loop.close()
 
