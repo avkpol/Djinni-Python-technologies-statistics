@@ -3,8 +3,8 @@
 ## How to run
 
 * clone the repository [git@github.com:avkpol/Djinni-Python-technologies-statistics.git]()
-* python -m venv venv
-* source venv/bin/activate
+* `python -m venv venv`
+* `source venv/bin/activate`
 * run `pip install -r requirements.txt`
 * run [djinni.py](djinni_technologies_statistics/spiders/djinni.py) 
 * run [skills.py](https://djinni.co/jobs/?all-keywords=&any-of-keywords=&exclude-keywords=&primary_keyword=JavaScript)
